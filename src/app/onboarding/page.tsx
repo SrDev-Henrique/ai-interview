@@ -5,9 +5,9 @@ import { OnboardingClient } from "./_client";
 export default async function OnboardingPage() {
   const { userId, user } = await getCurrentUser({ allData: true });
 
-  if (user == null) return redirect("/sign-in");
+  // if (userId == null) return redirect("/");
 
-  if (user != null) return redirect("/home");
+  // if (user != null) return redirect("/app");
 
   return (
     <div className="container flex flex-col items-center justify-center h-screen gap-4">

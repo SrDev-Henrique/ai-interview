@@ -1,27 +1,41 @@
+// app/onboarding/_client.tsx
 "use client";
-
-import { getUser } from "@/features/users/actions";
-import { Loader2Icon } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export function OnboardingClient({ userId }: { userId: string | null }) {
-  const router = useRouter();
+  const [status, setStatus] = useState<"idle" | "syncing" | "done" | "error">(
+    "idle"
+  );
+
+  console.log("userId", userId);
 
   useEffect(() => {
-    const intervalId = setInterval(async () => {
-      if (userId == null) return;
+    async function sync() {
+      setStatus("syncing");
+      try {
+        const res = await fetch("/api/sync-user", { method: "POST" });
+        if (!res.ok) throw new Error("Sync falhou");
+        setStatus("done");
+        // opcional: force reload para a versão que agora tem user no DB
+        // window.location.replace("/onboarding");
+      } catch (err) {
+        console.error("sync-user error:", err);
+        setStatus("error");
+      }
+    }
 
-      const user = await getUser(userId);
+    sync();
+  }, []);
 
-      if (user == null) return;
-
-      router.replace("/home");
-      clearInterval(intervalId);
-    }, 250);
-
-    return () => clearInterval(intervalId);
-  }, [userId, router]);
-
-  return <Loader2Icon className="animate-spin size-24" />;
+  return (
+    <div>
+      {status === "syncing"
+        ? "Finalizando..."
+        : status === "done"
+        ? "Pronto!"
+        : status === "error"
+        ? "Erro ao finalizar."
+        : null}
+    </div>
+  );
 }

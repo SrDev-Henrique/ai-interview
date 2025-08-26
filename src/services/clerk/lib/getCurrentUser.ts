@@ -16,8 +16,8 @@ export async function getCurrentUser({ allData = false }) {
 }
 
 async function getUser(userId: string) {
-  "use cache";
-  cacheTag(getUserIdTag(userId));
+  // "use cache";
+  // cacheTag(getUserIdTag(userId));
 
   return db.query.UsersTable.findFirst({
     where: eq(UsersTable.id, userId),
