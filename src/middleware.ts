@@ -1,4 +1,3 @@
-// src/middleware.ts
 import arcjet, { detectBot, shield, slidingWindow } from "@arcjet/next";
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { env } from "./data/env/server";
@@ -26,32 +25,14 @@ const aj = arcjet({
 });
 
 export default clerkMiddleware(async (auth, req) => {
-  try {
-    console.log(">>> middleware cookie:", req.headers.get("cookie"));
-  } catch (e) {
-    console.error("Erro ao ler cookie no middleware:", e);
+  if (!isPublicRoute(req)) {
+    await auth.protect();
   }
-
-  if (isPublicRoute(req)) return;
-
-  try {
-    const url = new URL(req.url);
-    if (url.searchParams.has("__clerk_db_jwt")) {
-      console.log(
-        ">>> Clerk callback detected — allowing handshake to complete."
-      );
-      return;
-    }
-  } catch (e) {
-    console.log("erro", e)
-  }
-
+  
   const decision = await aj.protect(req);
   if (decision.isDenied()) {
     return new Response(null, { status: 403 });
   }
-
-  await auth.protect();
 });
 
 export const config = {

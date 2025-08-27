@@ -1,5 +1,5 @@
-import ThemeSwitcher from "@/components/theme-switcher";
 import { SignInButton, UserButton } from "@clerk/nextjs";
+import ThemeSwitcher from "@/components/theme-switcher";
 
 export default function HomePage() {
   return (

@@ -8,7 +8,7 @@ export const questionDifficultyLevel = ["Fácil", "Médio", "Difícil"] as const
 export type QuestionDifficultyLevel = (typeof questionDifficultyLevel)[number];
 
 export const questionDifficultyLevelEnum = pgEnum(
-  "question_difficulty_level",
+  "questions_question_difficulty_level",
   questionDifficultyLevel,
 );
 

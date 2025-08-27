@@ -5,7 +5,7 @@ import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { auth } from "@clerk/nextjs/server";
 import { UsersTable } from "@/drizzle/schema";
 
-export async function getCurrentUser({ allData = false }) {
+export async function getCurrentUser({ allData = false } = {}) {
   const { userId, redirectToSignIn } = await auth();
 
   return {
@@ -15,11 +15,11 @@ export async function getCurrentUser({ allData = false }) {
   };
 }
 
-async function getUser(userId: string) {
-  // "use cache";
-  // cacheTag(getUserIdTag(userId));
+async function getUser(id: string) {
+  "use cache";
+  cacheTag(getUserIdTag(id));
 
   return db.query.UsersTable.findFirst({
-    where: eq(UsersTable.id, userId),
+    where: eq(UsersTable.id, id),
   });
 }

@@ -2,8 +2,6 @@ import { verifyWebhook } from "@clerk/nextjs/webhooks";
 import type { NextRequest } from "next/server";
 import { deleteUser, upsertUser } from "@/features/users/db";
 import { env } from "@/data/env/server";
-import { revalidateTag } from "next/cache";
-import { getUserGlobalTag, getUserIdTag } from "@/features/users/dbCache";
 
 export async function POST(request: NextRequest) {
   try {
@@ -30,9 +28,6 @@ export async function POST(request: NextRequest) {
           createdAt: new Date(clerkData.created_at),
           updatedAt: new Date(clerkData.updated_at),
         });
-
-        revalidateTag(getUserGlobalTag());
-        revalidateTag(getUserIdTag(clerkData.id));
         break;
       }
       case "user.deleted":
@@ -44,9 +39,6 @@ export async function POST(request: NextRequest) {
           }
 
           await deleteUser(event.data.id);
-
-          revalidateTag(getUserGlobalTag());
-          revalidateTag(getUserIdTag(event.data.id));
         }
         break;
     }

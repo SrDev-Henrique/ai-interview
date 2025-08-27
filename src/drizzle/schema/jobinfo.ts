@@ -9,14 +9,14 @@ export const experienceLevels = ["Junior", "Pleno", "Senior"] as const;
 
 export type ExperienceLevel = (typeof experienceLevels)[number];
 
-export const experienceLevelEnum = pgEnum("experience_level", experienceLevels);
+export const experienceLevelEnum = pgEnum("job_info_experience_level", experienceLevels);
 
 export const JobInfoTable = pgTable("job_info", {
   id,
   title: varchar(),
-  description: varchar().notNull(),
   name: varchar().notNull(),
   experienceLevel: experienceLevelEnum().notNull(),
+  description: varchar().notNull(),
   userId: varchar()
     .references(() => UsersTable.id, { onDelete: "cascade" })
     .notNull(),
